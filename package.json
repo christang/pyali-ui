@@ -1,0 +1,43 @@
+{
+  "name": "pyali-ui",
+  "version": "0.0.1",
+  "description": "UI front-end for pyali",
+  "main": "app/Main.js",
+  "scripts": {
+    "dev": "webpack-dev-server --watch-content-base --progress --colors",    
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/christang/pyali-ui.git"
+  },
+  "keywords": [
+    "bioinformatics",
+    "react"
+  ],
+  "author": "Chris Tang <chris@entangible.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/christang/pyali-ui/issues"
+  },
+  "homepage": "https://github.com/christang/pyali-ui#readme",
+  "dependencies": {
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.3.2",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-react": "^6.23.0",
+    "eslint": "^3.15.0",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^4.0.0",
+    "eslint-plugin-react": "^6.10.0",
+    "react-hot-loader": "^1.3.1",
+    "style-loader": "^0.13.1",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.4.1"
+  }
+}
