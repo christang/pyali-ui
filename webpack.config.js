@@ -14,6 +14,9 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),   // <-- HMR-plugin
+    new webpack.DefinePlugin({
+      'dev.env': { 'limit': 10000, }
+    }),
   ],
   module: {
     loaders: [{
@@ -25,7 +28,25 @@ module.exports = {
       exclude: /node_modules/,
     }, {
       test: /\.css$/,
-      loader: 'style!css',  // <-- style-loader
+      loader: 'style-loader!css-loader',
+    }, {
+      test: /\.jpg$/,
+      loader: 'file-loader',
+    }, {
+      test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+      loader: 'file-loader',
+    }, {
+      test: /\.png$/,
+      loader: 'url-loader?limit=${dev.env.limit}',
+    }, {
+      test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
+      loader: 'url-loader?limit=${dev.env.limit}&mimetype=application/font-woff',
+    }, {
+      test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+      loader: 'url-loader?limit=${dev.env.limit}&mimetype=application/octet-stream',
+    }, {
+      test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+      loader: 'url-loader?limit=${dev.env.limit}&mimetype=image/svg+xml'
     }],
   },
 };
