@@ -2,7 +2,7 @@
   "name": "pyali-ui",
   "version": "0.0.1",
   "description": "UI front-end for pyali",
-  "main": "app/Main.js",
+  "main": "app/index.js",
   "scripts": {
     "dev": "webpack-dev-server --watch-content-base --progress --colors",    
     "test": "echo \"Error: no test specified\" && exit 1"

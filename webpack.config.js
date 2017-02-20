@@ -6,7 +6,7 @@ module.exports = {
   entry: [
     'webpack/hot/only-dev-server',   // <-- Tries HMR but DOESN'T reload browser upon errors
     // 'webpack/hot/dev-server',   // <-- (Default) Tries HMR AND reloads the browser upon errors
-    './Main.js',
+    './index.js',
   ],
   output: {
     path: path.join(__dirname, '/dist'),
