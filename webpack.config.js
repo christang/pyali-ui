@@ -3,10 +3,13 @@ const webpack = require('webpack');
 
 module.exports = {
   context: path.join(__dirname, '/app'),
+  resolve: {
+    extensions: ['.js', '.jsx'],
+  },
   entry: [
     'webpack/hot/only-dev-server',   // <-- Tries HMR but DOESN'T reload browser upon errors
     // 'webpack/hot/dev-server',   // <-- (Default) Tries HMR AND reloads the browser upon errors
-    './index.js',
+    './index.jsx',
   ],
   output: {
     path: path.join(__dirname, '/dist'),
@@ -15,7 +18,7 @@ module.exports = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),   // <-- HMR-plugin
     new webpack.DefinePlugin({
-      'dev.env': { 'limit': 10000, }
+      'process.env': { limit: 10000 },
     }),
   ],
   module: {
@@ -37,16 +40,16 @@ module.exports = {
       loader: 'file-loader',
     }, {
       test: /\.png$/,
-      loader: 'url-loader?limit=${dev.env.limit}',
+      loader: `url-loader?limit=${process.env.limit}`,
     }, {
       test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-      loader: 'url-loader?limit=${dev.env.limit}&mimetype=application/font-woff',
+      loader: `url-loader?limit=${process.env.limit}&mimetype=application/font-woff`,
     }, {
       test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-      loader: 'url-loader?limit=${dev.env.limit}&mimetype=application/octet-stream',
+      loader: `url-loader?limit=${process.env.limit}&mimetype=application/octet-stream`,
     }, {
       test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-      loader: 'url-loader?limit=${dev.env.limit}&mimetype=image/svg+xml'
+      loader: `url-loader?limit=${process.env.limit}&mimetype=image/svg+xml`,
     }],
   },
 };
