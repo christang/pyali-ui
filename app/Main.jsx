@@ -1,7 +1,10 @@
 import React from 'react';
+import 'whatwg-fetch';
 import { Grid, Row, Col,
   FormGroup, ControlLabel, FormControl,
   Nav, Navbar, NavItem } from 'react-bootstrap';
+
+const apiURL = '/merge';
 
 const Main = () => (
   <div>
@@ -11,46 +14,93 @@ const Main = () => (
 );
 
 class MainContainer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.handleChange = this.handleChange.bind(this);
+    this.state = { value: '' };
+  }
+  handleChange(e) {
+    function parseIn(msg) {
+      const msgParts = msg
+        .replace(/^\s+/, '')
+        .replace(/\s+$/, '')
+        .replace(/ /g, '')
+        .split(/\n\n+/);
+      const ref = msgParts
+        .shift()
+        .split(/\n/);
+      const seqs = msgParts
+        .map((msgAli) => {
+          const aliParts = msgAli.split(/\n/);
+          return [parseInt(aliParts.shift(), 10), aliParts];
+        });
+
+      const json = { ref, seqs };
+      return json;
+    }
+    fetch(apiURL, {
+      method: 'POST',
+      body: JSON.stringify(parseIn(e.target.value)),
+    }).then((response) => {
+      response.json().then((json) => {
+        this.setState({ value: json.result });
+      });
+    }).catch((error) => {
+      alert(error);
+    });
+  }
   render() {
     return (
       <div>
-        <ReferenceAlignmentContainer />
-        <CombinedAlignmentContainer />
+        <ReferenceAlignmentContainer onChange={this.handleChange} />
+        <CombinedAlignmentContainer value={this.state.value} />
       </div>
     );
   }
 }
 
-class ReferenceAlignmentContainer extends React.Component {
-  render() {
-    return (
-      <Grid><Row className="show-grid"><Col md={12}>
-        <FormGroup controlId="formControlsTextarea">
-          <ControlLabel>Reference Alignment</ControlLabel>
-          <FormControl componentClass="textarea" placeholder="Paste aligned sequences here" />
-        </FormGroup>
-      </Col></Row></Grid>
-    );
-  }
+function ReferenceAlignmentContainer(props) {
+  return (
+    <Grid><Row className="show-grid"><Col md={12}>
+      <FormGroup controlId="formControlsTextarea">
+        <ControlLabel>Reference Alignment</ControlLabel>
+        <FormControl
+          componentClass="textarea"
+          placeholder="Paste aligned sequences here"
+          onChange={props.onChange}
+        />
+      </FormGroup>
+    </Col></Row></Grid>
+  );
 }
 
-class CombinedAlignmentContainer extends React.Component {
-  render() {
-    return (
-      <Grid><Row className="show-grid"><Col md={12}>
-        <FormGroup controlId="formControlsTextarea">
-          <ControlLabel>Combined Alignment</ControlLabel>
-          <FormControl componentClass="textarea" placeholder="Get a merged alignment here" />
-        </FormGroup>
-      </Col></Row></Grid>
-    );
-  }
+ReferenceAlignmentContainer.propTypes = {
+  onChange: React.PropTypes.func,
+};
+
+function CombinedAlignmentContainer(props) {
+  return (
+    <Grid><Row className="show-grid"><Col md={12}>
+      <FormGroup controlId="formControlsTextarea">
+        <ControlLabel>Combined Alignment</ControlLabel>
+        <FormControl
+          componentClass="textarea"
+          placeholder="Get a merged alignment here"
+          value={props.value}
+        />
+      </FormGroup>
+    </Col></Row></Grid>
+  );
 }
+
+CombinedAlignmentContainer.propTypes = {
+  value: React.PropTypes.string,
+};
 
 class AppNavbar extends React.Component {
   handleSelect(eventKey) {
-    this.state.eventKey = eventKey;
-    alert(`todo: ${[undefined, 'Help', 'About'][eventKey]}`);
+    const testMsg = "Here's a test\n\nabcde- \n-bcdef \n\n0\nab-cde\n-bbcd-\n\n1\nbcdef\n-cde-\n";
+    alert(`todo: ${[undefined, testMsg, 'About'][eventKey]}`);
   }
   render() {
     return (

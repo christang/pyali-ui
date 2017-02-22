@@ -52,4 +52,12 @@ module.exports = {
       loader: `url-loader?limit=${process.env.limit}&mimetype=image/svg+xml`,
     }],
   },
+  devServer: {
+    proxy: {
+      '/merge': {
+        target: 'http://entangible.com:8002',
+        secure: false,
+      },
+    },
+  },
 };
