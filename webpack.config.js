@@ -54,8 +54,8 @@ module.exports = {
   },
   devServer: {
     proxy: {
-      '/merge': {
-        target: 'http://entangible.com:8002',
+      '/merge/': {
+        target: 'http://entangible.com/',
         secure: false,
       },
     },
