@@ -4,7 +4,7 @@ import { Grid, Row, Col,
   FormGroup, ControlLabel, FormControl,
   Nav, Navbar, NavItem } from 'react-bootstrap';
 
-const apiURL = '/merge';
+const apiURL = '/merge/';
 
 const Main = () => (
   <div>
@@ -17,7 +17,7 @@ class MainContainer extends React.Component {
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
-    this.state = { value: '' };
+    this.state = { value: '', param: '' };
   }
   handleChange(e) {
     function parseIn(msg) {
@@ -53,7 +53,7 @@ class MainContainer extends React.Component {
     return (
       <div>
         <ReferenceAlignmentContainer onChange={this.handleChange} />
-        <CombinedAlignmentContainer value={this.state.value} />
+        <CombinedAlignmentContainer title={'Combined Alignment'} value={this.state.value} />
       </div>
     );
   }
@@ -82,7 +82,7 @@ function CombinedAlignmentContainer(props) {
   return (
     <Grid><Row className="show-grid"><Col md={12}>
       <FormGroup controlId="formControlsTextarea">
-        <ControlLabel>Combined Alignment</ControlLabel>
+        <ControlLabel>{props.title}</ControlLabel>
         <FormControl
           componentClass="textarea"
           placeholder="Get a merged alignment here"
@@ -94,29 +94,29 @@ function CombinedAlignmentContainer(props) {
 }
 
 CombinedAlignmentContainer.propTypes = {
+  title: React.PropTypes.string,
   value: React.PropTypes.string,
 };
 
-class AppNavbar extends React.Component {
-  handleSelect(eventKey) {
-    const testMsg = "Here's a test\n\nabcde- \n-bcdef \n\n0\nab-cde\n-bbcd-\n\n1\nbcdef\n-cde-\n";
-    alert(`todo: ${[undefined, testMsg, 'About'][eventKey]}`);
+function AppNavbar() {
+  function handleSelect(eventKey) {
+    const helpMsg = "Paste this into the 'Reference Alignment' area:\n\nabcde- \n-bcdef \n\n0\nab-cde\n-bbcd-\n\n1\nbcdef\n-cde-\n";
+    const aboutMsg = "Just a li'l informatics tool © 2017 // chris@entangible";
+    alert(`${[undefined, helpMsg, aboutMsg][eventKey]}`);
   }
-  render() {
-    return (
-      <Navbar>
-        <Navbar.Header>
-          <Navbar.Brand>
-            <a >Merge Alignment</a>
-          </Navbar.Brand>
-        </Navbar.Header>
-        <Nav activeKey="1" onSelect={this.handleSelect}>
-          <NavItem eventKey={1} >Help</NavItem>
-          <NavItem eventKey={2} >About</NavItem>
-        </Nav>
-      </Navbar>
-    );
-  }
+  return (
+    <Navbar>
+      <Navbar.Header>
+        <Navbar.Brand>
+          <a >Merge Alignment</a>
+        </Navbar.Brand>
+      </Navbar.Header>
+      <Nav activeKey="1" onSelect={handleSelect}>
+        <NavItem eventKey={1} >Help</NavItem>
+        <NavItem eventKey={2} >About</NavItem>
+      </Nav>
+    </Navbar>
+  );
 }
 
 export default Main;
