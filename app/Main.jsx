@@ -32,7 +32,7 @@ const validAli = (seq, ali) => {
 
 const validAlis = body => body.seqs.map(s => validAli(body.ref[s[0]], s[1])).every(_ => _);
 
-const listEq = (l1, l2) => l1 && l2 && l1.length === l2.length && l1.every((elem, i) => elem === l2[i]);
+const listEq = (l1, l2) => l1 && l2 && l1.length === l2.length && l1.every((el, i) => el === l2[i]);
 
 class MainContainer extends React.Component {
   constructor(props) {
@@ -40,12 +40,12 @@ class MainContainer extends React.Component {
     this.handleChangeRef = this.handleChangeRef.bind(this);
     this.handleChangeAli = this.handleChangeAli.bind(this);
     this.handleMessage = this.handleMessage.bind(this);
-    this.state = { ref: [], seqs: [], value: '', err: '' };
+    this.state = { ref: [], seqs: [], value: '', err: '', c: 0 };
   }
   handleChangeRef(e) {
     const ref = cleanMsg(e.target.value);
     if (!listEq(ref, this.state.ref)) {
-      this.setState({ ref, seqs: [], value: '', err: '' });
+      this.setState({ ref, seqs: [], value: '', err: '', c: this.state.c + 1 });
     }
   }
   handleChangeAli(e, i) {
@@ -83,7 +83,8 @@ class MainContainer extends React.Component {
         { this.state.ref.map((s, i) => (
           <AlignmentContainer
             alignment={notEmpty(this.state.seqs[i])}
-            key={i}
+                                          // updating c invalidates the key -- so we good
+            key={`${this.state.c}-${i}`}  // eslint-disable-line react/no-array-index-key
             label="Child alignment for ..."
             placeholder={this.state.ref[i].replace(/-/, '')}
             onChange={e => this.handleChangeAli(e, i)}
