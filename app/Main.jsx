@@ -16,7 +16,9 @@ const Main = () => (
 const cleanMsg = msg => msg
   .replace(/^\s+/, '')
   .replace(/\s+$/, '')
-  .replace(/ /g, '');
+  .replace(/ /g, '')
+  .split(/\n/)
+  .filter(_ => _);
 
 const cleanSeqs = seqs => seqs
   .map((s, i) => [i, s])
@@ -31,14 +33,16 @@ class MainContainer extends React.Component {
     this.state = { ref: [], seqs: [], value: '', err: '' };
   }
   handleChangeRef(e) {
-    const ref = cleanMsg(e.target.value)
-      .split(/\n/).filter(_ => _);
-    this.setState({ ref, seqs: this.state.seqs.map(() => []), value: '', err: '' });
+    this.setState({
+      ref: cleanMsg(e.target.value),
+      seqs: this.state.seqs.map(() => []),
+      value: '',
+      err: '',
+    });
   }
   handleChangeAli(e, i) {
-    const aliMsg = cleanMsg(e.target.value);
     const seqs = this.state.seqs.slice(0);
-    seqs[i] = aliMsg.split(/\n/);
+    seqs[i] = cleanMsg(e.target.value);
     this.setState({ seqs, value: '', err: '' });
     this.handleMessage(cleanSeqs(seqs));
   }
