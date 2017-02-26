@@ -24,6 +24,16 @@ const cleanSeqs = seqs => seqs
   .map((s, i) => [i, s])
   .filter(tup => tup[1] && tup[1].length);
 
+const validAli = (seq, ali) => {
+  const refSeqMatches = seq.replace(/-/g, '') === ali[0].replace(/-/g, '');
+  const aliIsProper = ali.every(s => s.length === ali[0].length);
+  return refSeqMatches && aliIsProper;
+};
+
+const validAlis = body => body.seqs.map(s => validAli(body.ref[s[0]], s[1])).every(_ => _);
+
+const listEq = (l1, l2) => l1 && l2 && l1.length === l2.length && l1.every((elem, i) => elem === l2[i]);
+
 class MainContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -33,25 +43,25 @@ class MainContainer extends React.Component {
     this.state = { ref: [], seqs: [], value: '', err: '' };
   }
   handleChangeRef(e) {
-    this.setState({
-      ref: cleanMsg(e.target.value),
-      seqs: this.state.seqs.map(() => []),
-      value: '',
-      err: '',
-    });
+    const ref = cleanMsg(e.target.value);
+    if (!listEq(ref, this.state.ref)) {
+      this.setState({ ref, seqs: [], value: '', err: '' });
+    }
   }
   handleChangeAli(e, i) {
     const seqs = this.state.seqs.slice(0);
     seqs[i] = cleanMsg(e.target.value);
-    this.setState({ seqs, value: '', err: '' });
-    this.handleMessage(cleanSeqs(seqs));
+
+    if (!listEq(seqs[i], this.state.seqs[i])) {
+      this.setState({ seqs, value: '', err: '' });
+      const body = { ref: this.state.ref, seqs: cleanSeqs(seqs) };
+      if (validAlis(body)) this.handleMessage(body);
+    }
   }
-  handleMessage(seqs) {
-    const ref = this.state.ref;
-    const msg = { ref, seqs };
+  handleMessage(body) {
     fetch(apiURL, {
       method: 'POST',
-      body: JSON.stringify(msg),
+      body: JSON.stringify(body),
     }).then((response) => {
       response.json().then((json) => {
         this.setState({ value: json.result, err: '' });
