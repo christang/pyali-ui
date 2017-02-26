@@ -4,7 +4,11 @@ import { Grid, Row, Col,
   FormGroup, ControlLabel, Alert,
   Nav, Navbar, NavItem } from 'react-bootstrap';
 
+// service endpoint that merges
 const apiURL = '/merge/';
+
+// mininum size in rows of textareas, e.g., when empty
+const minRows = 2;
 
 const Main = () => (
   <div>
@@ -71,18 +75,18 @@ class MainContainer extends React.Component {
     });
   }
   render() {
-    const notEmpty = ali => !!ali && ali.length > 0;
+    const safeLen = ali => (ali ? ali.length : 0);
     return (
       <Grid>
         <AlignmentContainer
-          alignment={notEmpty(this.state.ref)}
+          alignment={safeLen(this.state.ref)}
           label="Reference Alignment"
           placeholder="Paste your reference alignment here"
           onChange={this.handleChangeRef}
         />
         { this.state.ref.map((s, i) => (
           <AlignmentContainer
-            alignment={notEmpty(this.state.seqs[i])}
+            alignment={safeLen(this.state.seqs[i])}
                                           // updating c invalidates the key -- so we good
             key={`${this.state.c}-${i}`}  // eslint-disable-line react/no-array-index-key
             label="Child alignment for ..."
@@ -90,7 +94,7 @@ class MainContainer extends React.Component {
             onChange={e => this.handleChangeAli(e, i)}
           />)) }
         <AlignmentContainer
-          alignment={notEmpty(this.state.value)}
+          alignment={safeLen(this.state.value.split(/\n/))}
           label="Merged Alignment"
           value={this.state.value}
         />
@@ -114,6 +118,7 @@ const AlignmentContainer = props => (
       </ControlLabel>
       <textarea
         className="form-control"
+        rows={Math.max(props.alignment, minRows)}
         placeholder={props.placeholder} onChange={props.onChange}
         style={{ fontFamily: props.alignment ? 'monospace' : '', whiteSpace: 'pre' }}
         value={props.value}
@@ -123,7 +128,7 @@ const AlignmentContainer = props => (
 );
 
 AlignmentContainer.propTypes = {
-  alignment: React.PropTypes.bool,
+  alignment: React.PropTypes.number,
   label: React.PropTypes.string,
   onChange: React.PropTypes.func,
   placeholder: React.PropTypes.string,
