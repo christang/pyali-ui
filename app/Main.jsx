@@ -21,8 +21,10 @@ const cleanMsg = msg => msg
   .replace(/^\s+/, '')
   .replace(/\s+$/, '')
   .replace(/ /g, '')
+  .replace(/\./g, '-') // fasta format gap
   .split(/\n/)
-  .filter(_ => _);
+  .filter(_ => _)
+  .filter(_ => _[0] !== '>'); // fasta format sequence name;
 
 const cleanSeqs = seqs => seqs
   .map((s, i) => [i, s])
@@ -137,7 +139,7 @@ AlignmentContainer.propTypes = {
 
 function AppNavbar() {
   function handleSelect(eventKey) {
-    const helpMsg = "Paste this into the 'Reference Alignment' area:\n\nabcde- \n-bcdef\n\nPaste this into 'Child alignment for ... [abcde]'\n\nab-cde\n-bbcd-\n\nPaste this into 'Child alignment for ... [bcdef]'\n\nbcdef\n-cde-\n";
+    const helpMsg = "Paste this into the 'Reference Alignment' area:\n\n>SEQ_1\nabcde- \n>SEQ_2\n-bcdef\n\nPaste this into 'Child alignment for ... [abcde]' (FASTA headers are allowed but ignored)\n\nab-cde\n-bbcd-\n\nPaste this into 'Child alignment for ... [bcdef]' (FASTA headers are allowed but ignored)\n\nbcdef\n-cde-\n\nNotes\n - Sequences should not contain line breaks\n - All FASTA lines containing '>' are ignored";
     const aboutMsg = "An alignment informatics tool '\n\n © 2017 // chris@entangible";
     alert(`${[undefined, helpMsg, aboutMsg][eventKey]}`);
   }
