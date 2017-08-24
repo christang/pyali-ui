@@ -92,7 +92,7 @@ class MainContainer extends React.Component {
                                           // updating c invalidates the key -- so we good
             key={`${this.state.c}-${i}`}  // eslint-disable-line react/no-array-index-key
             label="Child alignment for ..."
-            placeholder={this.state.ref[i].replace(/-/, '')}
+            placeholder={this.state.ref[i].replace(/-/g, '')}
             onChange={e => this.handleChangeAli(e, i)}
           />)) }
         <AlignmentContainer
