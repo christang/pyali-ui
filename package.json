@@ -1,6 +1,6 @@
 {
   "name": "pyali-ui",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "UI front-end for pyali",
   "main": "app/index.js",
   "scripts": {
@@ -23,6 +23,7 @@
   "homepage": "https://github.com/christang/pyali-ui#readme",
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "fasta2json": "^0.1.1",
     "react": "^15.4.2",
     "react-bootstrap": "^0.30.7",
     "react-dom": "^15.4.2",

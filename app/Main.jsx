@@ -3,6 +3,7 @@ import 'whatwg-fetch';
 import { Grid, Row, Col,
   FormGroup, ControlLabel, Alert,
   Nav, Navbar, NavItem } from 'react-bootstrap';
+import fasta2json from 'fasta2json';
 
 // service endpoint that merges
 const apiURL = '/merge/';
@@ -17,14 +18,9 @@ const Main = () => (
   </div>
 );
 
-const cleanMsg = msg => msg
-  .replace(/^\s+/, '')
-  .replace(/\s+$/, '')
-  .replace(/ /g, '')
-  .replace(/\./g, '-') // fasta format gap
-  .split(/\n/)
-  .filter(_ => _)
-  .filter(_ => _[0] !== '>'); // fasta format sequence name;
+const parseMsg = msg => fasta2json.ParseFasta(msg);
+
+const cleanMsg = msg => parseMsg(msg).map(s => s.seq);
 
 const cleanSeqs = seqs => seqs
   .map((s, i) => [i, s])
