@@ -20,11 +20,9 @@ const Main = () => (
 
 const parseMsg = msg => fasta2json.ParseFasta(msg);
 
-const cleanMsg = msg => parseMsg(msg).map(s => s.seq);
+const getSeqs = seqs => seqs.map(s => s.seq);
 
-const cleanSeqs = seqs => seqs
-  .map((s, i) => [i, s])
-  .filter(tup => tup[1] && tup[1].length);
+const cleanSeqs = seqs => seqs.map((s, i) => [i, s]);
 
 const validAli = (seq, ali) => {
   const refSeqMatches = seq.replace(/-/g, '') === ali[0].replace(/-/g, '');
@@ -36,6 +34,8 @@ const validAlis = body => body.seqs.map(s => validAli(body.ref[s[0]], s[1])).eve
 
 const listEq = (l1, l2) => l1 && l2 && l1.length === l2.length && l1.every((el, i) => el === l2[i]);
 
+const seqsEq = (s1, s2) => s1 && s2 && listEq(getSeqs(s1), getSeqs(s2));
+
 class MainContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -45,18 +45,18 @@ class MainContainer extends React.Component {
     this.state = { ref: [], seqs: [], value: '', err: '', c: 0 };
   }
   handleChangeRef(e) {
-    const ref = cleanMsg(e.target.value);
-    if (!listEq(ref, this.state.ref)) {
+    const ref = parseMsg(e.target.value);
+    if (!seqsEq(ref, this.state.ref)) {
       this.setState({ ref, seqs: [], value: '', err: '', c: this.state.c + 1 });
     }
   }
   handleChangeAli(e, i) {
     const seqs = this.state.seqs.slice(0);
-    seqs[i] = cleanMsg(e.target.value);
+    seqs[i] = parseMsg(e.target.value);
 
-    if (!listEq(seqs[i], this.state.seqs[i])) {
+    if (!seqsEq(seqs[i], this.state.seqs[i])) {
       this.setState({ seqs, value: '', err: '' });
-      const body = { ref: this.state.ref, seqs: cleanSeqs(seqs) };
+      const body = { ref: getSeqs(this.state.ref), seqs: cleanSeqs(seqs.map(getSeqs)) };
       if (validAlis(body)) this.handleMessage(body);
     }
   }
@@ -87,8 +87,8 @@ class MainContainer extends React.Component {
             alignment={safeLen(this.state.seqs[i])}
                                           // updating c invalidates the key -- so we good
             key={`${this.state.c}-${i}`}  // eslint-disable-line react/no-array-index-key
-            label="Child alignment for ..."
-            placeholder={this.state.ref[i].replace(/-/g, '')}
+            label={`Child alignment for ${this.state.ref[i].head || '...'}`}
+            placeholder={this.state.ref[i].seq.replace(/-/g, '')}
             onChange={e => this.handleChangeAli(e, i)}
           />)) }
         <AlignmentContainer
