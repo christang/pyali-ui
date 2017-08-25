@@ -1,6 +1,6 @@
 {
   "name": "pyali-ui",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "UI front-end for pyali",
   "main": "app/index.js",
   "scripts": {

@@ -88,7 +88,7 @@ class MainContainer extends React.Component {
                                           // updating c invalidates the key -- so we good
             key={`${this.state.c}-${i}`}  // eslint-disable-line react/no-array-index-key
             label={`Child alignment for ${this.state.ref[i].head || '...'}`}
-            placeholder={this.state.ref[i].seq.replace(/-/g, '')}
+            placeholder={`>\n${this.state.ref[i].seq.replace(/-/g, '')}`}
             onChange={e => this.handleChangeAli(e, i)}
           />)) }
         <AlignmentContainer
@@ -135,7 +135,7 @@ AlignmentContainer.propTypes = {
 
 function AppNavbar() {
   function handleSelect(eventKey) {
-    const helpMsg = "Paste this into the 'Reference Alignment' area:\n\n>SEQ_1\nabcde- \n>SEQ_2\n-bcdef\n\nPaste this into 'Child alignment for ... [abcde]' (FASTA headers are allowed but ignored)\n\nab-cde\n-bbcd-\n\nPaste this into 'Child alignment for ... [bcdef]' (FASTA headers are allowed but ignored)\n\nbcdef\n-cde-\n\nNotes\n - Sequences should not contain line breaks\n - All FASTA lines containing '>' are ignored";
+    const helpMsg = "Paste this into the 'Reference Alignment' area:\n\n>SEQ_1\nabcde- \n>SEQ_2\n-bcdef\n\nPaste this into 'Child alignment for ... [abcde]' (FASTA format)\n\n>SEQ_1\nab-cde\n>SEQ_A\n-bbcd-\n\nPaste this into 'Child alignment for ... [bcdef]' (FASTA format)\n\n>SEQ_2\nbcdef\n>SEQ_B\n-cde-\n\nNotes\n - All sequences must have FASTA headers";
     const aboutMsg = "An alignment informatics tool '\n\n © 2017 // chris@entangible";
     alert(`${[undefined, helpMsg, aboutMsg][eventKey]}`);
   }
