@@ -36,6 +36,26 @@ const listEq = (l1, l2) => l1 && l2 && l1.length === l2.length && l1.every((el, 
 
 const seqsEq = (s1, s2) => s1 && s2 && listEq(getSeqs(s1), getSeqs(s2));
 
+const exportAli = (result, ref, seqs) => {
+  let index = 0;
+  const output = [];
+  const lines = result.split('\n').map(line => line.split(' ')[1]);
+  ref.forEach((s) => {
+    output.push({ head: s.head, seq: lines[index] });
+    index += 1;
+  });
+  seqs.forEach((a) => {
+    a.forEach((s, i) => {
+      if (i > 0) {
+        output.push({ head: s.head, seq: lines[index] });
+        index += 1;
+      }
+    });
+  });
+  console.log(output);
+  return fasta2json.Export(output);
+};
+
 class MainContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -57,16 +77,16 @@ class MainContainer extends React.Component {
     if (!seqsEq(seqs[i], this.state.seqs[i])) {
       this.setState({ seqs, value: '', err: '' });
       const body = { ref: getSeqs(this.state.ref), seqs: cleanSeqs(seqs.map(getSeqs)) };
-      if (validAlis(body)) this.handleMessage(body);
+      if (validAlis(body)) this.handleMessage(body, this.state.ref, seqs);
     }
   }
-  handleMessage(body) {
+  handleMessage(body, ref, seqs) {
     fetch(apiURL, {
       method: 'POST',
       body: JSON.stringify(body),
     }).then((response) => {
       response.json().then((json) => {
-        this.setState({ value: json.result, err: '' });
+        this.setState({ value: exportAli(json.result, ref, seqs), err: '' });
       }).catch((err) => {
         this.setState({ err });
       });
